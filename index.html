@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret Chat</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@400;500&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Reset and Base Styles */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            /* Default Theme: Light Minimal */
+            --bg-color: #f8fafc;
+            --text-color: #0f172a;
+            --primary-color: #0f172a;
+            --accent-color: #06b6d4;
+            --bubble-me-bg: #ffffff;
+            --bubble-you-bg: #eef2ff;
+            --bubble-me-text: #0f172a;
+            --bubble-you-text: #0f172a;
+            --panel-bg: #ffffff;
+            --panel-border: #e2e8f0;
+            --input-bg: #f1f5f9;
+            --input-text: #0f172a;
+            --button-bg: #0f172a;
+            --button-text: #ffffff;
+            --font-family: 'Inter', system-ui, sans-serif;
+            --body-extra-style: none;
+            --bubble-border-radius: 1.25rem;
+            --panel-extra-style: none;
+            --header-extra-style: none;
+        }
+        /* Theme Definitions */
+        [data-theme="dark-neon"] {
+            --bg-color: #0b0f1a; --text-color: #cbd5e1; --primary-color: #7c3aed; --accent-color: #06b6d4;
+            --bubble-me-bg: #1e293b; --bubble-you-bg: #0f172a; --bubble-me-text: #f8fafc; --bubble-you-text: #f8fafc;
+            --panel-bg: #1e293b80; --panel-border: #334155; --input-bg: #0f172a; --input-text: #f8fafc;
+            --button-bg: #7c3aed; --button-text: #ffffff; --font-family: 'Inter', sans-serif;
+            --header-extra-style: text-shadow: 0 0 5px var(--accent-color);
+        }
+        [data-theme="light-minimal"] { /* Root is already this theme */ }
+        [data-theme="hacker-green"] {
+            --bg-color: #000c06; --text-color: #00ff66; --primary-color: #00ff66; --accent-color: #66ff99;
+            --bubble-me-bg: #04180a; --bubble-you-bg: #00120a; --bubble-me-text: #00ff66; --bubble-you-text: #00ff66;
+            --panel-bg: #00000099; --panel-border: #00ff66; --input-bg: #000; --input-text: #00ff66;
+            --button-bg: #00ff66; --button-text: #000c06; --font-family: 'Roboto Mono', monospace;
+            --bubble-border-radius: 0.25rem;
+        }
+        [data-theme="pastel"] {
+            --bg-color: #fff7ed; --text-color: #57534e; --primary-color: #f973a8; --accent-color: #a78bfa;
+            --bubble-me-bg: #fff1f2; --bubble-you-bg: #f8fafc; --bubble-me-text: #57534e; --bubble-you-text: #57534e;
+            --panel-bg: #ffffff; --panel-border: #fbcfe8; --input-bg: #fff1f2; --input-text: #57534e;
+            --button-bg: #f973a8; --button-text: #ffffff; --font-family: 'Poppins', sans-serif;
+            --bubble-border-radius: 2rem;
+        }
+        [data-theme="red-black"] {
+            --bg-color: #0b0b0b; --text-color: #e5e5e5; --primary-color: #ef4444; --accent-color: #f97316;
+            --bubble-me-bg: #1f1f1f; --bubble-you-bg: #2b2b2b; --bubble-me-text: #e5e5e5; --bubble-you-text: #e5e5e5;
+            --panel-bg: #171717; --panel-border: #404040; --input-bg: #000; --input-text: #e5e5e5;
+            --button-bg: #ef4444; --button-text: #ffffff; --font-family: 'Inter', sans-serif; font-weight: 500;
+            --bubble-border-radius: 0.25rem;
+        }
+        [data-theme="aqua-blue"] {
+            --bg-color: #ecfeff; --text-color: #0e7490; --primary-color: #0891b2; --accent-color: #06b6d4;
+            --bubble-me-bg: #e0f2fe; --bubble-you-bg: #ffffff; --bubble-me-text: #0e7490; --bubble-you-text: #0e7490;
+            --panel-bg: #ffffff; --panel-border: #a5f3fc; --input-bg: #e0f2fe; --input-text: #0e7490;
+            --button-bg: #0891b2; --button-text: #ffffff; --font-family: 'Inter', sans-serif;
+            --bubble-border-radius: 1.5rem;
+        }
+        [data-theme="nature-green"] {
+            --bg-color: #f0fdf4; --text-color: #14532d; --primary-color: #16a34a; --accent-color: #65a30d;
+            --bubble-me-bg: #ecfdf5; --bubble-you-bg: #ffffff; --bubble-me-text: #14532d; --bubble-you-text: #14532d;
+            --panel-bg: #ffffff; --panel-border: #bbf7d0; --input-bg: #dcfce7; --input-text: #14532d;
+            --button-bg: #16a34a; --button-text: #ffffff; --font-family: 'Inter', sans-serif;
+        }
+        [data-theme="music-equalizer"] {
+            --bg-color: #0b1020; --text-color: #d1d5db; --primary-color: #a78bfa; --accent-color: #f472b6;
+            --bubble-me-bg: #0f172a; --bubble-you-bg: #111827; --bubble-me-text: #d1d5db; --bubble-you-text: #d1d5db;
+            --panel-bg: #0f172a; --panel-border: #374151; --input-bg: #000000; --input-text: #d1d5db;
+            --button-bg: #a78bfa; --button-text: #ffffff; --font-family: 'Inter', sans-serif;
+        }
+        [data-theme="glassmorphism"] {
+            --bg-color: #e0e7ff; --text-color: #1e293b; --primary-color: #6366f1; --accent-color: #06b6d4;
+            --bubble-me-bg: #ffffff80; --bubble-you-bg: #f8fafc80; --bubble-me-text: #1e293b; --bubble-you-text: #1e293b;
+            --panel-bg: #ffffff4d; --panel-border: #ffffff80; --input-bg: #ffffff80; --input-text: #1e293b;
+            --button-bg: #6366f1; --button-text: #ffffff; --font-family: 'Inter', sans-serif;
+            --body-extra-style: background-image: linear-gradient(135deg, #e0e7ff, #e9f5ff);
+            --panel-extra-style: backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        }
+        [data-theme="retro-terminal"] {
+            --bg-color: #001219; --text-color: #00ff9f; --primary-color: #00ff9f; --accent-color: #94d2bd;
+            --bubble-me-bg: #001219; --bubble-you-bg: #00141c; --bubble-me-text: #00ff9f; --bubble-you-text: #00ff9f;
+            --panel-bg: #001219; --panel-border: #00ff9f; --input-bg: #000; --input-text: #00ff9f;
+            --button-bg: #00ff9f; --button-text: #001219; --font-family: 'Roboto Mono', monospace;
+            --bubble-border-radius: 0;
+            --body-extra-style: background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); background-size: 100% 2px, 3px 100%;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+            background-image: var(--body-extra-style);
+        }
+
+        .container { display: flex; flex-direction: column; width: 100%; max-width: 900px; height: 95vh; background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: 1rem; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: background-color 0.3s ease; backdrop-filter: var(--panel-extra-style); }
+        .login-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem; height: 100%; text-align: center; }
+        .login-screen h1 { color: var(--primary-color); margin-bottom: 1.5rem; font-size: 2rem; }
+        .login-form input { width: 100%; max-width: 300px; padding: 0.75rem; margin-bottom: 1rem; border-radius: 0.5rem; border: 1px solid var(--panel-border); background-color: var(--input-bg); color: var(--input-text); font-size: 1rem; }
+        .login-form button { padding: 0.75rem 1.5rem; border: none; border-radius: 0.5rem; background: var(--button-bg); color: var(--button-text); font-weight: bold; cursor: pointer; transition: opacity 0.2s; }
+        .login-form button:hover { opacity: 0.9; }
+        #error-message { color: #ef4444; margin-top: 1rem; min-height: 1.2em; }
+
+        .chat-screen { display: none; flex-direction: column; height: 100%; opacity: 0; transition: opacity 0.5s ease-in-out; }
+        .chat-screen.visible { display: flex; opacity: 1; }
+
+        .chat-header { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1.5rem; border-bottom: 1px solid var(--panel-border); background-color: var(--panel-bg); z-index: 10; flex-shrink: 0; }
+        .chat-header h2 { font-size: 1.25rem; color: var(--primary-color); }
+        .header-controls { display: flex; align-items: center; gap: 1rem; }
+        #theme-selector, #clear-chat-btn, #change-strength-btn { padding: 0.5rem; border-radius: 0.5rem; border: 1px solid var(--panel-border); background-color: var(--input-bg); color: var(--input-text); cursor: pointer; }
+        #clear-chat-btn, #change-strength-btn { display: none; }
+        
+        .chat-main { display: flex; flex-grow: 1; overflow: hidden; }
+        .user-list { width: 220px; padding: 1rem; border-right: 1px solid var(--panel-border); flex-shrink: 0; display: flex; flex-direction: column; gap: 0.5rem; overflow-y: auto; }
+        .user-list h3 { margin-bottom: 0.5rem; color: var(--text-color); }
+        .user-list-item { background-color: var(--input-bg); padding: 0.25rem 0.5rem; border-radius: 0.5rem; font-size: 0.9rem; display: flex; justify-content: space-between; align-items: center; }
+        .user-actions button { background: none; border: none; cursor: pointer; font-size: 0.8rem; }
+        
+        .message-area { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .message-container { flex-grow: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; }
+        .message-bubble { max-width: 75%; padding: 0.75rem 1.25rem; border-radius: var(--bubble-border-radius); line-height: 1.4; word-wrap: break-word; position: relative; }
+        .message-bubble.me { background: var(--bubble-me-bg); color: var(--bubble-me-text); align-self: flex-end; border-bottom-right-radius: 0.25rem; }
+        .message-bubble.you { background: var(--bubble-you-bg); color: var(--bubble-you-text); align-self: flex-start; border-bottom-left-radius: 0.25rem; }
+        .msg-header { display: flex; justify-content: space-between; gap: 0.5rem; font-weight: bold; font-size: 0.9em; margin-bottom: 0.25rem; color: var(--primary-color); }
+        .msg-time { font-size: 0.75em; color: var(--accent-color); opacity: 0.8; }
+        .msg-content { white-space: pre-wrap; word-wrap: break-word; color: var(--text-color); }
+        .msg-actions { display: none; position: absolute; top: -10px; right: 0; background: var(--panel-bg); border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .message-bubble:hover .msg-actions { display: flex; }
+        .msg-actions button { background: none; border: none; color: var(--text-color); cursor: pointer; opacity: 0.6; transition: opacity 0.2s; padding: 0.2rem; }
+        .msg-actions button:hover { opacity: 1; }
+        .msg-edited-indicator { font-size: 0.7em; color: var(--accent-color); opacity: 0.7; margin-left: 0.5rem; }
+        .reply-snippet { background-color: var(--input-bg); border-left: 3px solid var(--accent-color); padding: 0.25rem 0.5rem; margin-bottom: 0.25rem; border-radius: 0.25rem; font-size: 0.8em; opacity: 0.8; cursor: pointer; }
+        .reply-snippet p { margin: 0; }
+        .mention { background-color: var(--accent-color); color: var(--button-text); padding: 0.1rem 0.3rem; border-radius: 0.25rem; font-weight: bold; }
+
+        .typing-indicator { font-style: italic; color: var(--accent-color); padding: 0 1rem; height: 1.5rem; opacity: 0; transition: opacity 0.2s; }
+        .typing-indicator.visible { opacity: 1; }
+
+        .message-form { display: flex; padding: 1rem; border-top: 1px solid var(--panel-border); gap: 0.5rem; flex-shrink: 0; }
+        #message-input { flex-grow: 1; padding: 0.75rem; border-radius: 2rem; border: 1px solid var(--panel-border); background-color: var(--input-bg); color: var(--input-text); font-size: 1rem; }
+        #message-input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 2px var(--accent-color); }
+        #message-form button { width: 48px; height: 48px; border: none; border-radius: 50%; background: var(--button-bg); color: var(--button-text); font-size: 1.25rem; cursor: pointer; transition: transform 0.2s; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
+        #message-form button:hover { transform: scale(1.05); }
+        #emoji-btn { font-size: 1.5rem; background: none; border: none; color: var(--text-color); cursor: pointer; opacity: 0.7; transition: opacity 0.2s; padding: 0.5rem; }
+        #emoji-btn:hover { opacity: 1; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: var(--panel-bg);
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid var(--panel-border);
+            width: 80%;
+            max-width: 400px;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+
+        .modal-content p {
+            margin-bottom: 1rem;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border-radius: 0.25rem;
+            border: 1px solid var(--panel-border);
+            background-color: var(--input-bg);
+            color: var(--input-text);
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .modal-buttons button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        #modal-confirm-btn {
+            background-color: var(--button-bg);
+            color: var(--button-text);
+        }
+
+        #modal-cancel-btn {
+            background-color: transparent;
+            border: 1px solid var(--panel-border);
+            color: var(--text-color);
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 0; }
+            .container { height: 100vh; border-radius: 0; }
+            .user-list { position: absolute; top: 60px; left: 0; width: 100%; height: calc(100% - 60px); background: var(--panel-bg); transform: translateX(-100%); transition: transform 0.3s ease-in-out; z-index: 100; display: flex; }
+            .user-list.open { transform: translateX(0); }
+            .chat-header h2 { font-size: 1rem; }
+            .chat-main { flex-direction: column; }
+            .message-area { width: 100%; }
+            #menu-btn { display: block; }
+        }
+    </style>
+</head>
+<body data-theme="dark-neon">
+
+    <div class="container">
+        <div class="login-screen" id="login-screen">
+            <h1>Secret Chat</h1>
+            <form class="login-form" id="login-form">
+                <input type="text" id="nickname" placeholder="Enter your nickname" required autocomplete="off">
+                <input type="text" id="room-code" placeholder="Enter secret room code" required autocomplete="off">
+                <input type="number" id="max-strength" placeholder="Max room strength (default: 2)" min="2" autocomplete="off">
+                <button type="submit">Join Chat</button>
+            </form>
+            <p id="error-message"></p>
+        </div>
+
+        <div class="chat-screen" id="chat-screen">
+            <header class="chat-header">
+                <div class="header-info">
+                    <h2 id="room-title">Secret Chat</h2>
+                    <span id="room-id" style="font-size: 0.8em; opacity: 0.7;"></span>
+                </div>
+                <div class="header-controls">
+                    <button id="menu-btn" style="display: none; z-index: 101; background: none; border: none; color: var(--text-color); font-size: 1.5rem; cursor: pointer;">☰</button>
+                    <select id="theme-selector">
+                        <option value="dark-neon">Dark Neon</option>
+                        <option value="light-minimal">Light Minimal</option>
+                        <option value="hacker-green">Hacker Green</option>
+                        <option value="pastel">Pastel</option>
+                        <option value="red-black">Red/Black</option>
+                        <option value="aqua-blue">Aqua Blue</option>
+                        <option value="nature-green">Nature Green</option>
+                        <option value="music-equalizer">Music Equalizer</option>
+                        <option value="glassmorphism">Glassmorphism</option>
+                        <option value="retro-terminal">Retro Terminal</option>
+                    </select>
+                    <button id="change-strength-btn">Change Strength</button>
+                    <button id="clear-chat-btn">Clear Chat</button>
+                </div>
+            </header>
+            <main class="chat-main">
+                <aside class="user-list" id="user-list">
+                    <h3>Online (<span id="user-count">0</span>/<span id="max-strength-display">0</span>)</h3>
+                    <div id="user-list-container"></div>
+                </aside>
+                <section class="message-area">
+                    <div class="message-container" id="message-container">
+                        </div>
+                    <div class="typing-indicator" id="typing-indicator"></div>
+                    <form class="message-form" id="message-form">
+                        <button type="button" id="emoji-btn">😀</button>
+                        <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off" autofocus>
+                        <button type="submit" aria-label="Send Message">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                        </button>
+                    </form>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <div id="custom-modal" class="modal">
+        <div class="modal-content">
+            <p id="modal-text"></p>
+            <input type="text" id="modal-input" style="display: none;">
+            <div class="modal-buttons">
+                <button id="modal-cancel-btn">Cancel</button>
+                <button id="modal-confirm-btn">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js" type="module"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const socket = io();
+
+            // DOM Elements
+            const loginScreen = document.getElementById('login-screen');
+            const chatScreen = document.getElementById('chat-screen');
+            const loginForm = document.getElementById('login-form');
+            const nicknameInput = document.getElementById('nickname');
+            const roomCodeInput = document.getElementById('room-code');
+            const maxStrengthInput = document.getElementById('max-strength');
+            const errorMessage = document.getElementById('error-message');
+            
+            const messageForm = document.getElementById('message-form');
+            const messageInput = document.getElementById('message-input');
+            const messageContainer = document.getElementById('message-container');
+            const userListContainer = document.getElementById('user-list-container');
+            const typingIndicator = document.getElementById('typing-indicator');
+
+            const roomTitle = document.getElementById('room-title');
+            const roomIdDisplay = document.getElementById('room-id');
+            const themeSelector = document.getElementById('theme-selector');
+            const clearChatBtn = document.getElementById('clear-chat-btn');
+            const changeStrengthBtn = document.getElementById('change-strength-btn');
+            const emojiBtn = document.getElementById('emoji-btn');
+            const menuBtn = document.getElementById('menu-btn');
+            
+            const userCountEl = document.getElementById('user-count');
+            const maxStrengthDisplayEl = document.getElementById('max-strength-display');
+
+            // Modal elements
+            const modal = document.getElementById('custom-modal');
+            const modalText = document.getElementById('modal-text');
+            const modalInput = document.getElementById('modal-input');
+            const modalConfirmBtn = document.getElementById('modal-confirm-btn');
+            const modalCancelBtn = document.getElementById('modal-cancel-btn');
+
+            let currentUserNickname = '';
+            let currentUserSid = '';
+            let currentUsers = {};
+            let replyToId = null;
+            let typingTimeout;
+
+            // --- Utility Functions ---
+            const createMessageBubble = (msg) => {
+                const bubble = document.createElement('div');
+                bubble.classList.add('message-bubble');
+                bubble.classList.add(msg.sid === currentUserSid ? 'me' : 'you');
+                bubble.dataset.id = msg.id;
+                bubble.dataset.sid = msg.sid;
+
+                // Sanitize and format message content
+                const messageContent = document.createElement('p');
+                messageContent.className = 'msg-content';
+                let sanitizedMessage = msg.message.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                // Highlight mentions
+                sanitizedMessage = sanitizedMessage.replace(/@(\w+)/g, (match, nickname) => {
+                    const mentionedUser = Object.values(currentUsers).find(user => user.nickname === nickname);
+                    return mentionedUser ? `<span class="mention">@${nickname}</span>` : match;
+                });
+                messageContent.innerHTML = sanitizedMessage;
+
+                const editedIndicator = msg.edited ? `<span class="msg-edited-indicator">(edited)</span>` : '';
+                const senderNickname = msg.sid === currentUserSid ? 'You' : msg.nickname;
+
+                // Handle reply snippet
+                let replySnippetHTML = '';
+                if (msg.reply_to) {
+                    const originalMsgBubble = document.querySelector(`.message-bubble[data-id="${msg.reply_to.id}"]`);
+                    if (originalMsgBubble) {
+                        const originalSender = originalMsgBubble.querySelector('.msg-header span').textContent;
+                        const originalText = originalMsgBubble.querySelector('.msg-content').textContent;
+                        replySnippetHTML = `
+                            <div class="reply-snippet" data-reply-to-id="${msg.reply_to.id}">
+                                <p><strong>Replying to ${originalSender}</strong></p>
+                                <p>${originalText.substring(0, 50)}...</p>
+                            </div>
+                        `;
+                    }
+                }
+
+                bubble.innerHTML = `
+                    ${replySnippetHTML}
+                    <div class="msg-header">
+                        <span>${senderNickname}</span>
+                        <div class="msg-meta">
+                            <span class="msg-time">${msg.timestamp}</span>
+                            ${editedIndicator}
+                        </div>
+                    </div>
+                `;
+                bubble.appendChild(messageContent);
+                
+                const actions = document.createElement('div');
+                actions.className = 'msg-actions';
+                
+                if (msg.sid === currentUserSid || (currentUsers[currentUserSid] && currentUsers[currentUserSid].role in ['owner', 'admin'])) {
+                    actions.innerHTML += `<button class="delete-btn" aria-label="Delete">🗑️</button>`;
+                }
+                if (msg.sid === currentUserSid) {
+                    actions.innerHTML += `<button class="edit-btn" aria-label="Edit">✏️</button>`;
+                }
+                actions.innerHTML += `<button class="reply-btn" aria-label="Reply">↩️</button>`;
+                
+                bubble.appendChild(actions);
+                
+                messageContainer.appendChild(bubble);
+                messageContainer.scrollTop = messageContainer.scrollHeight;
+            };
+
+            const updateUserList = (users) => {
+                currentUsers = users;
+                userListContainer.innerHTML = '';
+                userCountEl.textContent = Object.keys(users).length;
+                
+                const myRole = users[currentUserSid] ? users[currentUserSid].role : 'member';
+
+                for (const sid in users) {
+                    const user = users[sid];
+                    const userItem = document.createElement('div');
+                    userItem.className = 'user-list-item';
+                    
+                    let userText = user.nickname;
+                    if (sid === currentUserSid) userText += ' (You)';
+                    if (user.role === 'owner') userText += ' (Maalik)';
+                    else if (user.role === 'admin') userText += ' (Admin)';
+                    
+                    const userSpan = document.createElement('span');
+                    userSpan.textContent = userText;
+                    userItem.appendChild(userSpan);
+                    
+                    if (myRole === 'owner' && sid !== currentUserSid) {
+                        const userActions = document.createElement('div');
+                        userActions.className = 'user-actions';
+                        userActions.innerHTML = `
+                            <button class="kick-btn" data-sid="${sid}">👟</button>
+                            <button class="promote-btn" data-sid="${sid}" data-role="admin">⬆️</button>
+                            <button class="demote-btn" data-sid="${sid}" data-role="member">⬇️</button>
+                        `;
+                        userItem.appendChild(userActions);
+                    } else if (myRole === 'admin' && user.role === 'member') {
+                        const userActions = document.createElement('div');
+                        userActions.className = 'user-actions';
+                        userActions.innerHTML = `<button class="kick-btn" data-sid="${sid}">👟</button>`;
+                        userItem.appendChild(userActions);
+                    }
+                    
+                    userListContainer.appendChild(userItem);
+                }
+            };
+
+            const applyTheme = (theme) => {
+                document.body.dataset.theme = theme;
+                themeSelector.value = theme;
+            };
+            
+            const showModal = (text, type = 'confirm', defaultValue = '') => {
+                return new Promise((resolve) => {
+                    modalText.textContent = text;
+                    if (type === 'prompt') {
+                        modalInput.style.display = 'block';
+                        modalInput.value = defaultValue;
+                    } else {
+                        modalInput.style.display = 'none';
+                    }
+                    modal.style.display = 'block';
+
+                    const confirmHandler = () => {
+                        modal.style.display = 'none';
+                        resolve(type === 'prompt' ? modalInput.value : true);
+                        cleanup();
+                    };
+
+                    const cancelHandler = () => {
+                        modal.style.display = 'none';
+                        resolve(type === 'prompt' ? null : false);
+                        cleanup();
+                    };
+                    
+                    const cleanup = () => {
+                        modalConfirmBtn.removeEventListener('click', confirmHandler);
+                        modalCancelBtn.removeEventListener('click', cancelHandler);
+                    };
+
+                    modalConfirmBtn.addEventListener('click', confirmHandler);
+                    modalCancelBtn.addEventListener('click', cancelHandler);
+                });
+            };
+
+            // --- Event Handlers ---
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                currentUserNickname = nicknameInput.value.trim();
+                const room = roomCodeInput.value.trim();
+                const maxStrength = maxStrengthInput.value.trim();
+                if (currentUserNickname && room) {
+                    socket.emit('join', { nickname: currentUserNickname, room, max_strength: maxStrength });
+                }
+            });
+
+            messageForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const message = messageInput.value.trim();
+                if (message) {
+                    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    const messageId = Date.now().toString() + Math.random().toString(36).substring(2);
+                    const messageData = { 
+                        id: messageId, 
+                        message, 
+                        timestamp,
+                        reply_to: replyToId
+                    };
+                    
+                    socket.emit('send_message', messageData);
+                    messageData.sid = currentUserSid;
+                    messageData.nickname = currentUserNickname;
+                    createMessageBubble(messageData);
+                    
+                    messageInput.value = '';
+                    replyToId = null;
+                    document.getElementById('reply-indicator')?.remove();
+                    socket.emit('typing', { is_typing: false });
+                }
+            });
+
+            messageInput.addEventListener('input', () => {
+                clearTimeout(typingTimeout);
+                socket.emit('typing', { is_typing: true });
+                typingTimeout = setTimeout(() => {
+                    socket.emit('typing', { is_typing: false });
+                }, 2000);
+            });
+            
+            themeSelector.addEventListener('change', (e) => {
+                socket.emit('change_theme', { theme: e.target.value });
+            });
+
+            clearChatBtn.addEventListener('click', async () => {
+                const confirmed = await showModal('Are you sure you want to clear the entire chat history for this room? This cannot be undone.');
+                if (confirmed) {
+                    socket.emit('clear_chat');
+                }
+            });
+
+            changeStrengthBtn.addEventListener('click', async () => {
+                const currentStrength = maxStrengthDisplayEl.textContent;
+                const newStrength = await showModal('Enter new max room strength:', 'prompt', currentStrength);
+                if (newStrength) {
+                    socket.emit('change_max_strength', { strength: newStrength });
+                }
+            });
+
+            messageContainer.addEventListener('click', async (e) => {
+                const target = e.target;
+                const bubble = target.closest('.message-bubble');
+                const replySnippet = target.closest('.reply-snippet');
+
+                if (replySnippet) {
+                    const originalMessageId = replySnippet.dataset.replyToId;
+                    const originalMessage = document.querySelector(`.message-bubble[data-id="${originalMessageId}"]`);
+                    if (originalMessage) {
+                        originalMessage.scrollIntoView({ behavior: 'smooth' });
+                        originalMessage.style.transition = 'background-color 0.5s';
+                        originalMessage.style.backgroundColor = 'var(--accent-color)';
+                        setTimeout(() => {
+                            originalMessage.style.backgroundColor = '';
+                        }, 1000);
+                    }
+                    return;
+                }
+
+                if (!bubble) return;
+
+                const messageId = bubble.dataset.id;
+                const isMyMessage = bubble.dataset.sid === currentUserSid;
+
+                if (target.classList.contains('delete-btn')) {
+                    const confirmed = await showModal('Are you sure you want to delete this message?');
+                    if (confirmed) {
+                        socket.emit('delete_message', { id: messageId });
+                    }
+                }
+
+                if (target.classList.contains('edit-btn') && isMyMessage) {
+                    const msgContent = bubble.querySelector('.msg-content');
+                    const currentMessage = msgContent.textContent;
+                    const newMessage = await showModal('Edit your message:', 'prompt', currentMessage);
+
+                    if (newMessage && newMessage.trim() !== currentMessage) {
+                        socket.emit('edit_message', { id: messageId, message: newMessage.trim() });
+                    }
+                }
+
+                if (target.classList.contains('reply-btn')) {
+                    replyToId = { id: messageId, sid: bubble.dataset.sid };
+                    let replyIndicator = document.getElementById('reply-indicator');
+                    if (!replyIndicator) {
+                        replyIndicator = document.createElement('div');
+                        replyIndicator.id = 'reply-indicator';
+                        replyIndicator.style.padding = '0.5rem 1rem';
+                        replyIndicator.style.fontSize = '0.9em';
+                        messageForm.insertAdjacentElement('beforebegin', replyIndicator);
+                    }
+                    const originalSender = bubble.querySelector('.msg-header span').textContent;
+                    replyIndicator.innerHTML = `Replying to ${originalSender} <button id="cancel-reply" style="background:none; border:none; color:red; cursor:pointer;">&times;</button>`;
+                    
+                    document.getElementById('cancel-reply').addEventListener('click', () => {
+                        replyToId = null;
+                        replyIndicator.remove();
+                    });
+                }
+            });
+            
+            userListContainer.addEventListener('click', (e) => {
+                const target = e.target;
+                const sid = target.dataset.sid;
+                if (!sid) return;
+
+                if (target.classList.contains('kick-btn')) {
+                    socket.emit('kick_user', { sid });
+                } else if (target.classList.contains('promote-btn')) {
+                    socket.emit('change_role', { sid, role: 'admin' });
+                } else if (target.classList.contains('demote-btn')) {
+                    socket.emit('change_role', { sid, role: 'member' });
+                }
+            });
+
+            emojiBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const picker = document.querySelector('emoji-picker');
+                if (picker) {
+                    picker.remove();
+                } else {
+                    const newPicker = document.createElement('emoji-picker');
+                    newPicker.style.position = 'absolute';
+                    newPicker.style.bottom = '70px';
+                    newPicker.style.left = '10px';
+                    newPicker.addEventListener('emoji-click', event => {
+                        messageInput.value += event.detail.emoji.unicode;
+                    });
+                    messageForm.appendChild(newPicker);
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                const picker = document.querySelector('emoji-picker');
+                if (picker && !picker.contains(e.target) && e.target !== emojiBtn) {
+                    picker.remove();
+                }
+            });
+
+            menuBtn.addEventListener('click', () => {
+                document.getElementById('user-list').classList.toggle('open');
+            });
+
+            // --- Socket.IO Listeners ---
+            socket.on('join_success', (data) => {
+                loginScreen.style.display = 'none';
+                chatScreen.classList.add('visible');
+                roomIdDisplay.textContent = `Room: ${roomCodeInput.value}`;
+                currentUserSid = data.sid;
+
+                applyTheme(data.theme);
+                updateUserList(data.users);
+                
+                messageContainer.innerHTML = '';
+                data.messages.forEach(createMessageBubble);
+
+                if (data.users[currentUserSid] && data.users[currentUserSid].role === 'owner') {
+                    clearChatBtn.style.display = 'block';
+                    changeStrengthBtn.style.display = 'block';
+                }
+                
+                maxStrengthDisplayEl.textContent = data.max_strength;
+                messageInput.focus();
+            });
+
+            socket.on('join_error', (data) => {
+                errorMessage.textContent = data.error;
+            });
+            
+            socket.on('receive_message', (msg) => {
+                if (msg.sid !== currentUserSid) {
+                    createMessageBubble(msg);
+                    if (msg.message.includes(`@${currentUserNickname}`)) {
+                        console.log(`You were mentioned by ${msg.nickname}`);
+                    }
+                }
+            });
+
+            socket.on('message_deleted', (data) => {
+                const bubble = document.querySelector(`.message-bubble[data-id="${data.id}"]`);
+                if (bubble) bubble.remove();
+            });
+
+            socket.on('message_edited', (data) => {
+                const bubble = document.querySelector(`.message-bubble[data-id="${data.id}"]`);
+                if (bubble) {
+                    const msgContent = bubble.querySelector('.msg-content');
+                    if (msgContent) msgContent.textContent = data.message;
+                    let editedIndicator = bubble.querySelector('.msg-edited-indicator');
+                    if (!editedIndicator) {
+                        editedIndicator = document.createElement('span');
+                        editedIndicator.className = 'msg-edited-indicator';
+                        bubble.querySelector('.msg-meta').appendChild(editedIndicator);
+                    }
+                    editedIndicator.textContent = '(edited)';
+                }
+            });
+
+            socket.on('update_user_list', (data) => {
+                updateUserList(data.users);
+            });
+            
+            socket.on('typing_status', (data) => {
+                if (data.sid === currentUserSid) return;
+                typingIndicator.textContent = data.is_typing ? `${data.nickname} is typing...` : '';
+                typingIndicator.classList.toggle('visible', data.is_typing);
+            });
+
+            socket.on('theme_changed', (data) => {
+                applyTheme(data.theme);
+            });
+
+            socket.on('chat_cleared', () => {
+                messageContainer.innerHTML = '';
+                const systemMessage = document.createElement('div');
+                systemMessage.textContent = 'Chat history has been cleared by the owner.';
+                systemMessage.style.textAlign = 'center';
+                systemMessage.style.color = 'var(--accent-color)';
+                systemMessage.style.fontStyle = 'italic';
+                messageContainer.appendChild(systemMessage);
+            });
+            
+            socket.on('role_changed', (data) => {
+                if (currentUsers[data.sid]) currentUsers[data.sid].role = data.role;
+                updateUserList(currentUsers);
+                if (data.sid === currentUserSid && data.role === 'owner') {
+                    clearChatBtn.style.display = 'block';
+                    changeStrengthBtn.style.display = 'block';
+                }
+            });
+
+            socket.on('max_strength_changed', (data) => {
+                maxStrengthDisplayEl.textContent = data.strength;
+            });
+
+            socket.on('kicked', (data) => {
+                alert(data.reason);
+                location.reload();
+            });
+
+            socket.on('connect_error', () => {
+                errorMessage.textContent = 'Could not connect to the server. Please try again later.';
+            });
+        });
+    </script>
+</body>
+</html>
