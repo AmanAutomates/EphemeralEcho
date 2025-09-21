@@ -103,6 +103,14 @@ The application will be running at 👉 **[http://localhost:5000](http://localho
 
 ---
 
+📢 To chat outside your LAN, use **ngrok**:
+
+```bash
+ngrok http 5000
+```
+
+---
+
 ## ☁️ Deployment
 
 This application is ready for deployment on platforms like **Render**.
