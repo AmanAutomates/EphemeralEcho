@@ -8,8 +8,7 @@
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)
 
-![Secret Chat Screenshot](public/image.png))
-*(Representative example of a chat interface)*
+![Secret Chat Screenshot](public/image.png)
 
 **EphemeralEcho** is a lightweight, real-time chat application that prioritizes privacy. Create secure, password-protected chat rooms on the fly without needing an account. All conversations happen in memory and are wiped clean when the server restarts, ensuring no data is ever stored.
 
